@@ -1,6 +1,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="android.comsecandroidnetworkik">
 
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -9,5 +11,35 @@
         android:theme="@style/AppTheme">
 
     </application>
+
+    <receiver
+        android:name=".SampleBootReceiver"
+        android:enabled="true"
+        android:exported="true">
+        <intent-filter>
+            <action android:name="android.intent.action.BOOT_COMPLETED" />
+        </intent-filter>
+    </receiver>
+
+    Intent intent= new Intent(getApplicationContext(), NewReceiver.class);
+
+    // Make PendingIntent to be triggered each time the alarm goes off
+    final PendingIntent pIntent = PendingIntent.getBroadcast(this, 0,
+    intentDayAlarmStart, 0);
+
+    //setup calendar object for alarm start time
+    Calendar cal= Calendar.getInstance();
+    cal.setTimeInMillis(System.currentTimeMillis());
+
+    cal.set(Calendar.HOUR_OF_DAY, hourToStart);
+    cal.set(Calendar.MINUTE, minuteToStart);
+    cal.set(Calendar.SECOND, 0);
+
+    //make the alarm
+    AlarmManager morningAlarm = (AlarmManager) this.getSystemService(Context.ALARM_SERVICE);
+
+    //(type, starttime, interval, pintent)
+    morningAlarm.setInexactRepeating(AlarmManager.RTC_WAKEUP, dailyCalendar.getTimeInMillis(),
+    AlarmManager.INTERVAL_FIFTEEN_MINUTES, pIntent);
 
 </manifest>
